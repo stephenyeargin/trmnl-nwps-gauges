@@ -25,7 +25,7 @@ custom_fields:
 - keyname: nwps_history_days
   field_type: select
   name: Days to Chart
-  description: Show History in Days
+  description: Select a number of days (before now) to display on the chart.
   default: 7
   options:
   - 7 days: 7
