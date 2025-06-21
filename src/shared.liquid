@@ -1,1 +1,126 @@
+{% assign gauge = IDX_0 %}
+{% assign stageflow = IDX_1 %}
 
+{% assign observed_level = gauge.status.observed.primary %}
+{% assign forecast_level = gauge.status.forecast.primary %}
+{% assign observed_flow = gauge.status.observed.secondary %}
+
+{% assign observed_data = stageflow.observed %}
+{% assign forecast_data = stageflow.forecast %}
+
+{% assign chart_id = "water-level-chart-" | append_random %}
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartkick@5.0.1/dist/chartkick.min.js"></script>
+<script>
+  try {
+    if ("{{ gauge.name }}" === '' || "{{ stageflow.observed.issuedTime }}" === '') {
+      throw new Error('Unable to load data from API');
+    }
+
+    var observedDataRaw = {{ observed_data | json }};
+    var forecastDataRaw = {{ forecast_data | json }};
+    var gaugeRaw = {{ gauge | json }};
+    var daysToChart = parseInt({{ trmnl.plugin_settings.custom_fields_values.nwps_history_days | default: 7 }}, 10);
+
+    var observedData = observedDataRaw;
+    var forecastData = forecastDataRaw;
+    var gauge = gaugeRaw;
+
+    var plotLines = {};
+
+    if (!gauge.flood || !gauge.flood.categories) {
+      throw new Error("Gauge flood categories are missing or invalid.");
+    }
+
+    // Ensure data is an array
+    if (!Array.isArray(observedData.data)) {
+      console.warn("Observed data is not an array. Defaulting to empty array.");
+      observedData.data = [];
+    }
+
+    if (!Array.isArray(forecastData.data)) {
+      console.warn("Forecast data is not an array. Defaulting to empty array.");
+      forecastData.data = [];
+    }
+
+    var now = new Date();
+    var daysAgo = new Date(now.getTime() - daysToChart * 24 * 60 * 60 * 1000);
+
+    observedData.data = observedData.data.filter(function(d) {
+      return Date.parse(d.validTime) <= now.getTime(); // Keep only entries earlier than or equal to now
+    });
+
+    forecastData.data = forecastData.data.filter(function(d) {
+      return Date.parse(d.validTime) > now.getTime(); // Keep only entries later than now
+    });
+
+    var combinedData = observedData.data
+      .map(function(d) {
+        return [Date.parse(d.validTime), d.primary];
+      })
+      .concat(forecastData.data.map(function(d) {
+        return [Date.parse(d.validTime), d.primary];
+      }))
+      .filter(function(d) {
+        return d[0] >= daysAgo.getTime(); // Filter data within the range
+      });
+
+    // Ensure the charted data is unique by removing duplicate entries based on validTime
+    var uniqueData = new Map();
+    combinedData.forEach(function(d) {
+      uniqueData.set(d[0], d[1]); // Use the timestamp as the key to ensure uniqueness
+    });
+    combinedData = Array.from(uniqueData, function([key, value]) {
+      return [key, value];
+    });
+
+    var maxReading = Math.max(...combinedData.map(function(d) {
+      return d[1];
+    }));
+
+    try {
+      var floodStages = [];
+
+      if (gauge.flood.categories.action && gauge.flood.categories.action.stage) {
+        floodStages.push({ name: "Action", value: gauge.flood.categories.action.stage });
+      }
+      if (gauge.flood.categories.minor && gauge.flood.categories.minor.stage) {
+        floodStages.push({ name: "Minor", value: gauge.flood.categories.minor.stage });
+      }
+      if (gauge.flood.categories.moderate && gauge.flood.categories.moderate.stage) {
+        floodStages.push({ name: "Moderate", value: gauge.flood.categories.moderate.stage });
+      }
+      if (gauge.flood.categories.major && gauge.flood.categories.major.stage) {
+        floodStages.push({ name: "Major", value: gauge.flood.categories.major.stage });
+      }
+
+    } catch (error) {
+      console.error("Error constructing flood stages:", error);
+      var floodStages = [];
+    }
+
+    var plotLines = floodStages
+      .filter(function(stage) {
+        return stage.value <= maxReading + 10; // Show only if within 10 units above max reading
+      })
+      .map(function(stage) {
+        return {
+          color: "#121212",
+          width: 1,
+          value: stage.value,
+          label: {
+            text: `${stage.name} Stage (${stage.value}")`,
+            align: "right",
+            style: {
+              color: "#121212"
+            }
+          }
+        };
+      });
+  } catch (error) {
+    console.error("Error rendering chart:", error);
+    var gauge = { flood: { categories: {} } }; // Default structure
+    var plotLines = [];
+  }
+</script>

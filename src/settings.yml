@@ -1,15 +1,36 @@
-#
-# Changes to this file will be overwritten by `trmnlp pull`.
-#
-# Docs: https://help.usetrmnl.com/en/articles/10542599-importing-and-exporting-private-plugins#h_581fb988f0
-#
 ---
 strategy: polling
 no_screen_padding: 'no'
 dark_mode: 'no'
 static_data: ''
 polling_verb: get
-polling_url: 'https://api.vercel.app/blog'
-polling_headers: ''
-name: Plugin Template
-refresh_interval: 1440
+polling_url: |
+  https://api.water.noaa.gov/nwps/v1/gauges/{{ nwps_gauge_id }}
+  https://api.water.noaa.gov/nwps/v1/gauges/{{ nwps_gauge_id }}/stageflow
+polling_headers: content-type=application/json
+id: 101750
+custom_fields:
+- keyname: author_bio
+  name: About This Plugin
+  field_type: author_bio
+  description: Displays the current gauge reading for a station
+  github_url: https://github.com/stephenyeargin/trmnl-nwps-gauges
+  learn_more_url: https://water.noaa.gov/
+  email_address: stephen@yearg.in
+- keyname: nwps_gauge_id
+  field_type: string
+  name: NWPS Gauge ID
+  description: Provide a valid NWS Location ID (LID), USGS Site ID, or NWM Reach ID.
+  placeholder: NAST1
+- keyname: nwps_history_days
+  field_type: select
+  name: Days to Chart
+  description: Show History in Days
+  default: 7
+  options:
+  - 7 days: 7
+  - 14 days: 14
+  - 21 days: 21
+  - 30 days: 30
+name: NWPS River Gauges
+refresh_interval: 60

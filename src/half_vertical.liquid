@@ -1,19 +1,131 @@
 <div class="view">
-  <div class="layout layout--row layout--top">
-    <div class="grid grid--cols-1 gap--medium">
+  <div class="layout layout--col gap--space-between">
+    <!-- Key Metrics -->
+    <div class="grid grid--cols-2 gap--medium mb--5">
       <div class="item">
         <div class="meta"></div>
         <div class="content">
-          <div class="label label--medium">Half Vertical</div>
-          <div class="description">Replace me with your content!</div>
+          <span class="value value--medium">{{ observed_level | default: '?' }}</span>
+          {% if observed_level > gauge.flood.categories.action.stage %}
+          <span class="label label--small label--inverted">⚠︎ Observed Level (ft)</span>
+          {% else %}
+          <span class="label label--small">Observed Level (ft)</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content">
+          <span class="value value--medium">{{ forecast_level | default: '?' }}</span>
+          {% if observed_level > gauge.flood.categories.action.stage %}
+          <span class="label label--small label--inverted">⚠︎ Forecast Level (ft)</span>
+          {% else %}
+          <span class="label label--small">Forecast Level (ft)</span>
+
+          {% endif %}
+        </div>
+      </div>
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content">
+          <span class="value value--medium">{{ observed_flow | default: '?' }}</span>
+          <span class="label label--small">Observed Flow (kcfs)</span>
         </div>
       </div>
     </div>
+    <!-- Line Chart -->
+    <div id="{{ chart_id }}" style="width: 100%; height: 400px;"></div>
   </div>
 
+  <!-- Title Bar -->
   <div class="title_bar">
-    <img class="image" src="https://usetrmnl.com/images/brand/glyphs/glyph--black.svg" />
-    <span class="title">Plugin Template</span>
-    <span class="instance">{{ trmnl.plugin_settings.instance_name }}</span>
+    <img class="image" src="https://raw.githubusercontent.com/stephenyeargin/trmnl-nwps-gauges/refs/heads/main/assets/noaa.svg" />
+    <span class="title">{{ gauge.name | define: 'Unable to load gauge data' }} </span>
   </div>
 </div>
+
+<script>
+  Highcharts.chart("{{ chart_id }}", {
+    chart: {
+      type: "line",
+      height: 300,
+      animation: false
+    },
+    title: {
+      text: null
+    },
+    xAxis: {
+      type: "datetime",
+      labels: {
+        style: {
+          fontSize: "16px",
+          color: "#000000"
+        }
+      },
+      lineWidth: 0,
+      gridLineDashStyle: "dot",
+      tickWidth: 1,
+      tickLength: 0,
+      gridLineWidth: 1,
+      gridLineColor: "#000000",
+      tickPixelInterval: 120,
+      plotLines: [{
+        color: "#121212",
+        width: 2,
+        dashStyle: "Dash",
+        value: Date.parse(now),
+        label: {
+          text: "Now",
+          align: "center",
+          style: {
+            color: "#121212"
+          }
+        }
+      }]
+    },
+    yAxis: {
+      labels: {
+        style: {
+          fontSize: "16px",
+          color: "#000000"
+        }
+      },
+      gridLineDashStyle: "solid", // Revert horizontal grid lines to solid
+      gridLineWidth: 1,
+      gridLineColor: "#000000",
+      tickAmount: 5,
+      title: {
+        text: "Water Level (ft)"
+      },
+      plotLines: plotLines.map(function(line) {
+        return {
+          ...line,
+          dashStyle: "Dash" // Ensure annotation lines are dashed
+        };
+      })
+    },
+    plotOptions: {
+      series: {
+        animation: false,
+        lineWidth: 4
+      }
+    },
+    series: [
+      {
+        name: "Combined",
+        data: combinedData,
+        color: "black",
+        curve: true
+      }
+    ],
+    legend: {
+      enabled: false
+    },
+    tooltip: {
+      enabled: false
+    },
+    credits: {
+      enabled: false
+    }
+  });
+</script>

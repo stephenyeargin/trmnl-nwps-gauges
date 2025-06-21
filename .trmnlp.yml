@@ -7,12 +7,16 @@ watch:
   - src
 
 # values of custom fields (defined in src/settings.yml)
-custom_fields: {}
+custom_fields: {
+  # nwps_gauge_id: NAST1,
+  nwps_gauge_id: ATOT2,
+  nwps_history_days: 7
+}
 
 # override variables
 variables:
   trmnl: {
     plugin_settings: {
-      instance_name: 'My Instance'
+      instance_name: 'NWPS River Gauges'
     }
   }
