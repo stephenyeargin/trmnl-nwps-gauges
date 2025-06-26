@@ -20,7 +20,7 @@ custom_fields:
 - keyname: nwps_gauge_id
   field_type: string
   name: NWPS Gauge ID
-  description: Provide a valid NWS Location ID (LID), USGS Site ID, or NWM Reach ID.
+  description: Provide a valid NWS Location ID (LID), USGS Site ID, or NWM Reach ID from <a href="https://water.noaa.gov/" class="underline">Water.NOAA.Gov</a>.
   placeholder: NAST1
 - keyname: nwps_history_days
   field_type: select
