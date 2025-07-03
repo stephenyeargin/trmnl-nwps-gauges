@@ -33,6 +33,15 @@
           <span class="label label--small">Observed Flow (kcfs)</span>
         </div>
       </div>
+      {% if forecast_flow > 0 %}
+        <div class="item">
+          <div class="meta"></div>
+          <div class="content">
+            <span class="value value--medium">{{ forecast_flow | default: '?' }}</span>
+            <span class="label label--small">Forecasted Flow ({{ forecast_flow_unit }})</span>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </div>
 

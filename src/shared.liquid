@@ -2,8 +2,13 @@
 {% assign stageflow = IDX_1 %}
 
 {% assign observed_level = gauge.status.observed.primary %}
+{% assign observed_level_unit = gauge.status.observed.primaryUnit %}
 {% assign forecast_level = gauge.status.forecast.primary %}
+{% assign forecast_level_unit = gauge.status.forecast.primaryUnit %}
 {% assign observed_flow = gauge.status.observed.secondary %}
+{% assign observed_flow_unit = gauge.status.observed.secondaryUnit %}
+{% assign forecast_flow = gauge.status.forecast.secondary %}
+{% assign forecast_flow_unit = gauge.status.forecast.secondaryUnit %}
 
 {% assign observed_data = stageflow.observed %}
 {% assign forecast_data = stageflow.forecast %}
