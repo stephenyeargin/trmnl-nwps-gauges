@@ -13,18 +13,19 @@
           {% endif %}
         </div>
       </div>
-      <div class="item">
-        <div class="meta"></div>
-        <div class="content">
-          <span class="value value--large">{{ forecast_level | default: '?' }}</span>
-          {% if observed_level > gauge.flood.categories.action.stage %}
-          <span class="label label--inverted">⚠︎ Forecast Level (ft)</span>
-          {% else %}
-          <span class="label">Forecast Level (ft)</span>
-
-          {% endif %}
+      {% if forecast_level > 0 %}
+        <div class="item">
+          <div class="meta"></div>
+          <div class="content">
+            <span class="value value--large">{{ forecast_level | default: '?' }}</span>
+            {% if observed_level > gauge.flood.categories.action.stage %}
+            <span class="label label--inverted">⚠︎ Forecast Level (ft)</span>
+            {% else %}
+            <span class="label">Forecast Level (ft)</span>
+            {% endif %}
+          </div>
         </div>
-      </div>
+      {% endif %}
       <div class="item">
         <div class="meta"></div>
         <div class="content">
