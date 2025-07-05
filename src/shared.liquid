@@ -84,6 +84,21 @@
       return d[1];
     }));
 
+    var minReading = Math.min(...combinedData.map(function(d) {
+      return d[1];
+    }));
+
+    // Calculate range and add generous padding to smooth out visual fluctuations
+    var dataRange = maxReading - minReading;
+
+    // Use a more generous padding approach similar to NOAA's charts
+    // For small ranges, ensure we show at least 8-10 feet total range
+    var minTotalRange = 8; // Minimum total range to display
+    var paddingFeet = Math.max(3, dataRange * 0.25, (minTotalRange - dataRange) / 2); // At least 3 feet, or 25% of range, or enough to reach 8ft total
+
+    var chartMin = Math.max(0, minReading - paddingFeet); // Don't go below 0
+    var chartMax = maxReading + paddingFeet;
+
     try {
       var floodStages = [];
 
