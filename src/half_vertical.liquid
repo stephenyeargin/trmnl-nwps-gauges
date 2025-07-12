@@ -1,64 +1,62 @@
-<div class="view">
-  <div class="layout layout--col gap--space-between">
-    <!-- Key Metrics -->
-    <div class="grid grid--cols-2 gap--medium mb--5">
+<div class="layout layout--col gap--space-between">
+  <!-- Key Metrics -->
+  <div class="grid grid--cols-2 gap--medium mb--5">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--medium">{{ observed_level | default: '?' }}</span>
+        {% if observed_level > gauge.flood.categories.action.stage %}
+        <span class="label label--small label--inverted">⚠︎ Observed Level ({{ observed_level_unit }})</span>
+        {% else %}
+        <span class="label label--small">Observed Level ({{ observed_level_unit }})</span>
+        {% endif %}
+      </div>
+    </div>
+    {% if forecast_level > 0 %}
       <div class="item">
         <div class="meta"></div>
         <div class="content">
-          <span class="value value--medium">{{ observed_level | default: '?' }}</span>
+          <span class="value value--medium">{{ forecast_level | default: '?' }}</span>
           {% if observed_level > gauge.flood.categories.action.stage %}
-          <span class="label label--small label--inverted">⚠︎ Observed Level ({{ observed_level_unit }})</span>
+          <span class="label label--small label--inverted">⚠︎ Forecast Level ({{ forecast_level_unit }})</span>
           {% else %}
-          <span class="label label--small">Observed Level ({{ observed_level_unit }})</span>
+          <span class="label label--small">Forecast Level ({{ forecast_level_unit }})</span>
           {% endif %}
         </div>
       </div>
-      {% if forecast_level > 0 %}
-        <div class="item">
-          <div class="meta"></div>
-          <div class="content">
-            <span class="value value--medium">{{ forecast_level | default: '?' }}</span>
-            {% if observed_level > gauge.flood.categories.action.stage %}
-            <span class="label label--small label--inverted">⚠︎ Forecast Level ({{ forecast_level_unit }})</span>
-            {% else %}
-            <span class="label label--small">Forecast Level ({{ forecast_level_unit }})</span>
-            {% endif %}
-          </div>
-        </div>
-      {% endif %}
+    {% endif %}
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--medium">{{ observed_flow | default: '?' }}</span>
+        <span class="label label--small">Observed Flow ({{ observed_flow_unit }})</span>
+      </div>
+    </div>
+    {% if forecast_flow > 0 %}
       <div class="item">
         <div class="meta"></div>
         <div class="content">
-          <span class="value value--medium">{{ observed_flow | default: '?' }}</span>
-          <span class="label label--small">Observed Flow ({{ observed_flow_unit }})</span>
+          <span class="value value--medium">{{ forecast_flow | default: '?' }}</span>
+          <span class="label label--small">Forecasted Flow ({{ forecast_flow_unit }})</span>
         </div>
       </div>
-      {% if forecast_flow > 0 %}
-        <div class="item">
-          <div class="meta"></div>
-          <div class="content">
-            <span class="value value--medium">{{ forecast_flow | default: '?' }}</span>
-            <span class="label label--small">Forecasted Flow ({{ forecast_flow_unit }})</span>
-          </div>
-        </div>
-      {% endif %}
-    </div>
-    <!-- Line Chart -->
-    <div id="{{ chart_id }}" style="width: 100%; height: 400px;"></div>
+    {% endif %}
   </div>
+  <!-- Line Chart -->
+  <div id="{{ chart_id }}" style="width: 100%;"></div>
+</div>
 
-  <!-- Title Bar -->
-  <div class="title_bar">
-    <img class="image" src="https://raw.githubusercontent.com/stephenyeargin/trmnl-nwps-gauges/refs/heads/main/assets/noaa.svg" />
-    <span class="title">{{ gauge.name | default: 'Unable to load gauge data' }} </span>
-  </div>
+<!-- Title Bar -->
+<div class="title_bar">
+  <img class="image" src="https://raw.githubusercontent.com/stephenyeargin/trmnl-nwps-gauges/refs/heads/main/assets/noaa.svg" />
+  <span class="title">{{ gauge.name | default: 'Unable to load gauge data' }} </span>
 </div>
 
 <script>
   Highcharts.chart("{{ chart_id }}", {
     chart: {
       type: "line",
-      height: 300,
+      height: 270,
       animation: false
     },
     title: {
