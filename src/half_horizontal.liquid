@@ -1,3 +1,10 @@
+{% if is_blocked %}
+  <div class="layout layout--col gap--space-between">
+    <div class="text--center">
+      <span class="title">NWPS is blocking TRMNL servers (Error 403)</span>
+    </div>
+  </div>
+{% else %}
 <div class="layout">
   <!-- Key Metrics -->
   <div class="grid grid--cols-4 gap--space-between gap--medium">
@@ -49,6 +56,7 @@
     <div id="{{ chart_id }}" class="col col--span-2" style="width: 100%"></div>
   </div>
 </div>
+{% endif %}
 
 <!-- Title Bar -->
 <div class="title_bar">

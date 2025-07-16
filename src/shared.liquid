@@ -1,6 +1,14 @@
 {% assign gauge = IDX_0 %}
 {% assign stageflow = IDX_1 %}
 
+{% comment %} Check if the data is blocked (returns HTML instead of JSON) {% endcomment %}
+{% assign gauge_string = gauge | json %}
+{% assign stageflow_string = stageflow | json %}
+{% assign is_blocked = false %}
+{% if gauge_string contains '<html>' or gauge_string contains '403 Forbidden' or stageflow_string contains '<html>' or stageflow_string contains '403 Forbidden' %}
+  {% assign is_blocked = true %}
+{% endif %}
+
 {% assign observed_level = gauge.status.observed.primary %}
 {% assign observed_level_unit = gauge.status.observed.primaryUnit %}
 {% assign forecast_level = gauge.status.forecast.primary %}
@@ -19,6 +27,13 @@
 <script src="https://cdn.jsdelivr.net/npm/chartkick@5.0.1/dist/chartkick.min.js"></script>
 <script>
   try {
+    // Check if data is blocked (contains HTML error response)
+    var isBlocked = {{ is_blocked | json }};
+
+    if (isBlocked) {
+      throw new Error('API access is currently blocked (403 Forbidden)');
+    }
+
     if ("{{ gauge.name }}" === '' || "{{ stageflow.observed.issuedTime }}" === '') {
       throw new Error('Unable to load data from API');
     }
