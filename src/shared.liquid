@@ -83,7 +83,9 @@
         return [Date.parse(d.validTime), d.primary];
       }))
       .filter(function(d) {
-        return d[0] >= daysAgo.getTime(); // Filter data within the range
+        // Filter out invalid sentinel values (NOAA uses -9999 for missing data)
+        // Also filter by date range
+        return d[0] >= daysAgo.getTime() && d[1] !== null && d[1] !== undefined && d[1] > -9000;
       });
 
     // Ensure the charted data is unique by removing duplicate entries based on validTime
