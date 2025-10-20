@@ -25,6 +25,9 @@ jobs:
           ruby-version: '3.4'
           bundler-cache: true
 
+      - name: Install trmnlp
+        run: gem install trmnl_preview
+
       - name: Run trmnlp build
         run: bundle exec trmnlp build
 
@@ -151,6 +154,9 @@ jobs:
         with:
           ruby-version: '3.4'
           bundler-cache: true
+
+      - name: Install trmnlp
+        run: gem install trmnl_preview
 
       - name: Create trmnlp config directory
         run: mkdir -p ~/.config/trmnlp
