@@ -8,6 +8,7 @@ polling_url: |
   https://api.water.noaa.gov/nwps/v1/gauges/{{ nwps_gauge_id }}
   https://api.water.noaa.gov/nwps/v1/gauges/{{ nwps_gauge_id }}/stageflow
 polling_headers: content-type=application/json
+polling_body: ''
 id: 101750
 custom_fields:
 - keyname: author_bio
