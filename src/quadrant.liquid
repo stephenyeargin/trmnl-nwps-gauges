@@ -50,6 +50,8 @@
     {% endif %}
   </div>
 </div>
+<!-- Line Chart -->
+<div id="{{ chart_id }}" class="hidden lg:portrait:visible w--full"></div>
 {% endif %}
 
 <!-- Title Bar -->
@@ -57,3 +59,91 @@
   <img class="image" src="https://raw.githubusercontent.com/stephenyeargin/trmnl-nwps-gauges/refs/heads/main/assets/noaa.svg" />
   <span class="title">{{ gauge.name | default: 'Unable to load gauge data' }} </span>
 </div>
+
+<script>
+  Highcharts.chart("{{ chart_id }}", {
+    chart: {
+      type: "line",
+      animation: false
+    },
+    title: {
+      text: null
+    },
+    xAxis: {
+      type: "datetime",
+      labels: {
+        style: {
+          fontSize: "16px",
+          color: "#000000"
+        }
+      },
+      lineWidth: 0,
+      gridLineDashStyle: "dot",
+      tickWidth: 1,
+      tickLength: 0,
+      gridLineWidth: 1,
+      gridLineColor: "#000000",
+      tickPixelInterval: 120,
+      plotLines: [{
+        color: "#121212",
+        width: 2,
+        dashStyle: "Dash",
+        value: Date.parse(now),
+        label: {
+          text: "Now",
+          align: "center",
+          style: {
+            color: "#121212"
+          }
+        }
+      }]
+    },
+    yAxis: {
+      min: chartMin,
+      max: chartMax,
+      labels: {
+        style: {
+          fontSize: "16px",
+          color: "#000000"
+        }
+      },
+      gridLineDashStyle: "solid", // Revert horizontal grid lines to solid
+      gridLineWidth: 1,
+      gridLineColor: "#000000",
+      tickAmount: 5,
+      title: {
+        text: "Water Level ({{ observed_level_unit }})"
+      },
+      plotLines: plotLines.map(function(line) {
+        return {
+          ...line,
+          dashStyle: "Dash" // Ensure annotation lines are dashed
+        };
+      })
+    },
+    plotOptions: {
+      series: {
+        animation: false,
+        lineWidth: 4
+      }
+    },
+    series: [
+      {
+        name: "Combined",
+        data: combinedData,
+        color: "black",
+        curve: true
+      }
+    ],
+    legend: {
+      enabled: false
+    },
+    tooltip: {
+      enabled: false
+    },
+    credits: {
+      enabled: false
+    }
+  });
+</script>
+
