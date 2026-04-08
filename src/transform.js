@@ -61,12 +61,14 @@ function transform(input) {
         .filter(d =>
           d &&
           d.validTime &&
+          !d.validTime.includes(':15:00') &&
+          !d.validTime.includes(':45:00') &&
           d.primary != null &&
           d.primary > -9000 // NOAA missing-data sentinel
         )
         .map(d => ({
-          validTime: d.validTime,
-          primary: d.primary
+          t: d.validTime,
+          p: d.primary
         }))
     };
   }

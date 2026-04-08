@@ -68,19 +68,19 @@
     var daysAgo = new Date(now.getTime() - daysToChart * 24 * 60 * 60 * 1000);
 
     observedData.data = observedData.data.filter(function(d) {
-      return Date.parse(d.validTime) <= now.getTime(); // Keep only entries earlier than or equal to now
+      return Date.parse(d.t) <= now.getTime(); // Keep only entries earlier than or equal to now
     });
 
     forecastData.data = forecastData.data.filter(function(d) {
-      return Date.parse(d.validTime) > now.getTime(); // Keep only entries later than now
+      return Date.parse(d.t) > now.getTime(); // Keep only entries later than now
     });
 
     var combinedData = observedData.data
       .map(function(d) {
-        return [Date.parse(d.validTime), d.primary];
+        return [Date.parse(d.t), d.p];
       })
       .concat(forecastData.data.map(function(d) {
-        return [Date.parse(d.validTime), d.primary];
+        return [Date.parse(d.t), d.p];
       }))
       .filter(function(d) {
         // Filter out invalid sentinel values (NOAA uses -9999 for missing data)
