@@ -16,6 +16,7 @@ custom_fields:
 - keyname: author_bio
   name: About This Plugin
   field_type: author_bio
+  category: nature
   description: Displays the current gauge reading for a station
   github_url: https://github.com/stephenyeargin/trmnl-nwps-gauges
   learn_more_url: https://water.noaa.gov/
