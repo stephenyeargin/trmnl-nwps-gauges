@@ -11,7 +11,7 @@
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--large lg:value--xlarge">{{ observed_level | default: '?' }}</span>
+        <span class="value value--large lg:value--xlarge value--tnums">{{ observed_level | default: '?' }}</span>
         {% if observed_level > gauge.flood.categories.action.stage %}
         <span class="label label--small lg:label--base" label--inverted">⚠︎ Observed Level ({{ observed_level_unit }})</span>
         {% else %}
@@ -23,7 +23,7 @@
       <div class="item">
         <div class="meta"></div>
         <div class="content">
-          <span class="value value--large lg:value--xlarge">{{ forecast_level | default: '?' }}</span>
+          <span class="value value--large lg:value--xlarge value--tnums">{{ forecast_level | default: '?' }}</span>
           {% if observed_level > gauge.flood.categories.action.stage %}
           <span class="label label--small lg:label--base label--inverted">⚠︎ Forecasted Level ({{ forecast_level_unit }})</span>
           {% else %}
@@ -35,7 +35,7 @@
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--large lg:value--xlarge">{{ observed_flow | default: '?' }}</span>
+        <span class="value value--large lg:value--xlarge value--tnums">{{ observed_flow | default: '?' }}</span>
         <span class="label label--small lg:label--base">Observed Flow ({{ observed_flow_unit }})</span>
       </div>
     </div>
@@ -43,7 +43,7 @@
       <div class="item">
         <div class="meta"></div>
         <div class="content">
-          <span class="value value--large lg:value--xlarge">{{ forecast_flow | default: '?' }}</span>
+          <span class="value value--large lg:value--xlarge value--tnums">{{ forecast_flow | default: '?' }}</span>
           <span class="label label--small lg:label--base">Forecasted Flow ({{ forecast_flow_unit }})</span>
         </div>
       </div>
