@@ -8,45 +8,38 @@
 <div class="layout layout--col gap--space-between">
   <!-- Key Metrics -->
   <div class="grid grid--cols-2 gap--medium mb--5">
-    <div class="item">
-      <div class="meta"></div>
-      <div class="content">
-        <span class="value value--medium lg:value--large value--tnums">{{ observed_level | default: '?' }}</span>
-        {% if observed_level > gauge.flood.categories.action.stage %}
-        <span class="label label--small lg:label--base label--inverted">⚠︎ Observed Level ({{ observed_level_unit }})</span>
-        {% else %}
-        <span class="label label--small lg:label--base">Observed Level ({{ observed_level_unit }})</span>
-        {% endif %}
-      </div>
-    </div>
+    {% render "metric_item",
+      metric_value: observed_level,
+      value_class: "value--medium lg:value--large value--tnums",
+      label_class: "label--small lg:label--base",
+      label_text: "Observed Level",
+      unit_text: observed_level_unit,
+      is_warning: is_flood_warning_current %}
     {% if forecast_level > 0 %}
-      <div class="item">
-        <div class="meta"></div>
-        <div class="content">
-          <span class="value value--medium lg:value--large value--tnums">{{ forecast_level | default: '?' }}</span>
-          {% if observed_level > gauge.flood.categories.action.stage %}
-          <span class="label label--small label--inverted">⚠︎ Forecast Level ({{ forecast_level_unit }})</span>
-          {% else %}
-          <span class="label label--small lg:label--base">Forecast Level ({{ forecast_level_unit }})</span>
-          {% endif %}
-        </div>
-      </div>
+      {% render "metric_item",
+        metric_value: forecast_level,
+        value_class: "value--medium lg:value--large value--tnums",
+        label_class: "label--small lg:label--base",
+        warning_label_class: "label--small",
+        label_text: "Forecast Level",
+        unit_text: forecast_level_unit,
+        is_warning: is_flood_warning_forecast %}
     {% endif %}
-    <div class="item">
-      <div class="meta"></div>
-      <div class="content">
-        <span class="value value--medium lg:value--large value--tnums">{{ observed_flow | default: '?' }}</span>
-        <span class="label label--small lg:label--base">Observed Flow ({{ observed_flow_unit }})</span>
-      </div>
-    </div>
+    {% render "metric_item",
+      metric_value: observed_flow,
+      value_class: "value--medium lg:value--large value--tnums",
+      label_class: "label--small lg:label--base",
+      label_text: "Observed Flow",
+      unit_text: observed_flow_unit,
+      is_warning: false %}
     {% if forecast_flow > 0 %}
-      <div class="item">
-        <div class="meta"></div>
-        <div class="content">
-          <span class="value value--medium lg:value--large value--tnums">{{ forecast_flow | default: '?' }}</span>
-          <span class="label label--small lg:label--base">Forecasted Flow ({{ forecast_flow_unit }})</span>
-        </div>
-      </div>
+      {% render "metric_item",
+        metric_value: forecast_flow,
+        value_class: "value--medium lg:value--large value--tnums",
+        label_class: "label--small lg:label--base",
+        label_text: "Forecasted Flow",
+        unit_text: forecast_flow_unit,
+        is_warning: false %}
     {% endif %}
   </div>
   <!-- Line Chart -->

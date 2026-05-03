@@ -23,6 +23,30 @@
 
 {% assign chart_id = "water-level-chart-" | append_random %}
 
+{% assign is_flood_warning_current = false %}
+{% assign is_flood_warning_forecast = false %}
+{% if observed_level > gauge.flood.categories.action.stage %}{% assign is_flood_warning_current = true %}{% endif %}
+{% if forecast_level > gauge.flood.categories.action.stage %}{% assign is_flood_warning_forecast = true %}{% endif %}
+
+{% template metric_item %}
+{% if metric_value != -999 %}
+<div class="item">
+  <div class="meta"></div>
+  <div class="content">
+    <span class="value {{ value_class }}">{{ metric_value | default: '?' }}</span>
+    {% if is_warning %}
+    {% assign warning_class = warning_label_class | default: label_class %}
+    {% assign warning_text = warning_label_text | default: label_text %}
+    {% assign warning_unit = warning_unit_text | default: unit_text %}
+    <span class="label {{ warning_class }} label--error">⚠︎ {{ warning_text }}{% unless warning_unit == blank %} ({{ warning_unit }}){% endunless %}</span>
+    {% else %}
+    <span class="label {{ label_class }}">{{ label_text }}{% unless unit_text == blank %} ({{ unit_text }}){% endunless %}</span>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endtemplate %}
+
 <script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
 <script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
 <script>
