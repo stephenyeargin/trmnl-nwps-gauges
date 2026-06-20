@@ -18,5 +18,8 @@ variables:
   trmnl: {
     plugin_settings: {
       instance_name: 'NWPS River Gauges'
+    },
+    user: {
+      locale: 'en-US'
     }
   }

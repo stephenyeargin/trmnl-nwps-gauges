@@ -11,6 +11,7 @@
     <div class="col col--span-2 col--center">
       <div class="grid grid--cols-2 gap--medium">
         {% render "metric_item",
+          trmnl: trmnl,
           metric_value: observed_level,
           value_class: "value--medium lg:value--large value--tnums",
           label_class: "label--small lg:label--base",
@@ -19,6 +20,7 @@
           is_warning: is_flood_warning_current %}
         {% if forecast_level > 0 %}
           {% render "metric_item",
+            trmnl: trmnl,
             metric_value: forecast_level,
             value_class: "value--medium lg:value--large value--tnums",
             label_class: "label--small lg:label--base",
@@ -27,6 +29,7 @@
             is_warning: is_flood_warning_forecast %}
         {% endif %}
         {% render "metric_item",
+          trmnl: trmnl,
           metric_value: observed_flow,
           value_class: "value--medium lg:value--large value--tnums",
           label_class: "label--small lg:label--base",
@@ -35,6 +38,7 @@
           is_warning: false %}
         {% if forecast_flow > 0 %}
           {% render "metric_item",
+            trmnl: trmnl,
             metric_value: forecast_flow,
             value_class: "value--medium lg:value--large value--tnums",
             label_class: "label--small lg:label--base",
@@ -60,7 +64,9 @@
 </div>
 
 <script>
+  const gaugeLocale = {{ trmnl.user.locale | json }} || 'en-US';
   Highcharts.chart("{{ chart_id }}", {
+    lang: { locale: gaugeLocale },
     chart: {
       type: "line",
       animation: false

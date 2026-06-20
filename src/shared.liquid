@@ -33,7 +33,7 @@
 <div class="item">
   <div class="meta"></div>
   <div class="content">
-    <span class="value {{ value_class }}">{{ metric_value | default: '?' }}</span>
+    <span class="value {{ value_class }}" data-value-format="true" data-value-locale="{{ trmnl.user.locale }}">{{ metric_value | default: '?' }}</span>
     {% if is_warning %}
     {% assign warning_class = warning_label_class | default: label_class %}
     {% assign warning_text = warning_label_text | default: label_text %}
