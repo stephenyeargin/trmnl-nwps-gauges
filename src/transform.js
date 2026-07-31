@@ -51,7 +51,7 @@ function transform(input) {
   // --------------------------------
   // Helper to reduce time-series data
   // --------------------------------
-  function reduceSeries(series) {
+  function reduceSeries(series, cutoff) {
     if (!series || !Array.isArray(series.data)) {
       return { data: [] };
     }
@@ -64,14 +64,22 @@ function transform(input) {
           !d.validTime.includes(':15:00') &&
           !d.validTime.includes(':45:00') &&
           d.primary != null &&
-          d.primary > -9000 // NOAA missing-data sentinel
+          d.primary > -9000 && // NOAA missing-data sentinel
+          (!cutoff || Date.parse(d.validTime) >= cutoff)
         )
         .map(d => ({
           t: d.validTime,
-          p: d.primary
+          p: Math.round(d.primary * 100) / 100
         }))
     };
   }
+
+  // Only keep as much observed history as the user asked to chart, so the
+  // payload doesn't always carry NOAA's full ~30-day window.
+  const historyDays = Number(
+    input?.trmnl?.plugin_settings?.custom_fields_values?.nwps_history_days ?? 7
+  );
+  const observedCutoff = Date.now() - historyDays * 24 * 60 * 60 * 1000;
 
   // -------------------------------
   // Reduce IDX_1 (stage/flow series)
@@ -80,7 +88,7 @@ function transform(input) {
     observed: {
       issuedTime: stageflow?.observed?.issuedTime ?? "",
       primaryUnits: stageflow?.observed?.primaryUnits ?? "",
-      data: reduceSeries(stageflow.observed).data
+      data: reduceSeries(stageflow.observed, observedCutoff).data
     },
 
     forecast: {
