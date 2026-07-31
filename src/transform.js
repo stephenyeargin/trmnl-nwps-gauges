@@ -51,7 +51,7 @@ function transform(input) {
   // --------------------------------
   // Helper to reduce time-series data
   // --------------------------------
-  function reduceSeries(series, cutoff) {
+  function reduceSeries(series, { cutoff, hourlyOnly } = {}) {
     if (!series || !Array.isArray(series.data)) {
       return { data: [] };
     }
@@ -63,6 +63,7 @@ function transform(input) {
           d.validTime &&
           !d.validTime.includes(':15:00') &&
           !d.validTime.includes(':45:00') &&
+          (!hourlyOnly || !d.validTime.includes(':30:00')) &&
           d.primary != null &&
           d.primary > -9000 && // NOAA missing-data sentinel
           (!cutoff || Date.parse(d.validTime) >= cutoff)
@@ -75,11 +76,14 @@ function transform(input) {
   }
 
   // Only keep as much observed history as the user asked to chart, so the
-  // payload doesn't always carry NOAA's full ~30-day window.
+  // payload doesn't always carry NOAA's full ~30-day window. Beyond 14 days
+  // also drop to hourly resolution to keep longer windows from ballooning
+  // the payload; forecast data stays at full resolution.
   const historyDays = Number(
     input?.trmnl?.plugin_settings?.custom_fields_values?.nwps_history_days ?? 7
   );
   const observedCutoff = Date.now() - historyDays * 24 * 60 * 60 * 1000;
+  const reduceObservedResolution = historyDays > 14;
 
   // -------------------------------
   // Reduce IDX_1 (stage/flow series)
@@ -88,7 +92,10 @@ function transform(input) {
     observed: {
       issuedTime: stageflow?.observed?.issuedTime ?? "",
       primaryUnits: stageflow?.observed?.primaryUnits ?? "",
-      data: reduceSeries(stageflow.observed, observedCutoff).data
+      data: reduceSeries(stageflow.observed, {
+        cutoff: observedCutoff,
+        hourlyOnly: reduceObservedResolution
+      }).data
     },
 
     forecast: {
