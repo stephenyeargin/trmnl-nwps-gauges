@@ -37,4 +37,5 @@ custom_fields:
   - 21 days: 21
   - 30 days: 30
 name: NWPS River Gauges
+description: River stage and flood forecast from NOAA water gauges
 refresh_interval: 60
